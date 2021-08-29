@@ -47,7 +47,7 @@ exports.signup = (req, res) => {
   
   exports.signin = (req, res) => {
     User.findOne({ email: req.body.email }).exec(async (error, user) => {
-      if (error) return res.status(400).json({ message:"User not found",error });
+      if (error) return res.status(400).json({ error:"User not found",error });
       if (user) {
         const isPassword = await user.authenticate(req.body.password);
         if (isPassword) {
@@ -59,11 +59,11 @@ exports.signup = (req, res) => {
           });
         } else {
           return res.status(400).json({
-            message: "Invalid Password!",
+            error: "Invalid Password!",
           });
         }
       } else {
-        return res.status(400).json({ message: "User not found" });
+        return res.status(400).json({ error: "User not found" });
       }
     });
   };
@@ -79,3 +79,9 @@ exports.getAllUsers = (req, res) => {
         }
     })
 } 
+exports.signout = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({
+    message: "Signout successfully...!",
+  });
+};
